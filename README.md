@@ -2,15 +2,17 @@
 
 ## Proyecto MINTIC2022, Grupo 8 Ciclo 4, Desarrollo de Aplicaciones Móviles.
 
-###Análisis del problema
+Análisis del problema:
+
 En una tienda muy reconocida de música se está presentando una notable disminución en el ingreso de las ventas, esto debido a que los clientes manifiestan no tener el tiempo suficiente para
 trasladarse hasta los locales de tienda física para consultar y realizar la compra de álbumes y canciones de acuerdo con sus gustos musicales; además manifiestan tener preferencia de búsqueda y compra en plataformas digitales y más con teléfonos móviles.
 Partiendo de esta situación nos encargaron la creación y desarrollo de una aplicación móvil que sirva de vitrina digital que genere los productos en venta de la tienda en formato Mp3 y así, aumentar el nivel de ventas.
 
-###Alcance del proyecto
+Alcance del proyecto:
+
 Crear una aplicación móvil que permita el registro e ingreso del usuario, selección de géneros musicales, artistas, canciones. Esta aplicación permitirá la compra de la canción o canciones seleccionadas y, se agregaran a la lista predeterminada del usuario para la reproducción de estas canciones.
 
-###Características:
+Características:
 
 Como Usuario:
 * C1- Crear una cuenta en el marketplace (tienda digital) para poder utilizar la plataforma.
