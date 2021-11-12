@@ -1,6 +1,7 @@
 # DreamTeam - MusicApp
 
-## Proyecto MINTIC2022, Grupo 8 Ciclo 4, Desarrollo de Aplicaciones Móviles.
+## Proyecto MINTIC2022, Grupo 8 Ciclo 4 
+## Desarrollo de Aplicaciones Móviles
 
 Análisis del problema:
 En una tienda muy reconocida de música se está presentando una notable disminución en el ingreso de las ventas, esto debido a que los clientes manifiestan no tener el tiempo suficiente para
