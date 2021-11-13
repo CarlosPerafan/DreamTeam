@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MusicApp</string>
+    <string name="msj1">inserir dados</string>
+    <string name="msj2">dados incorretos</string>
+    <string name="msj3">Bem-vindo</string>
+    <string name="user">usuário</string>
+    <string name="password">a senha</string>
+    <string name="signin">Entrar</string>
+</resources>
