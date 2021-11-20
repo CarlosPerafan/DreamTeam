@@ -70,4 +70,8 @@ public class listUserAdapter extends RecyclerView.Adapter<listUserAdapter.Contac
             });
         }
     }
+
+    public boolean nohace(){
+        return true;
+    }
 }
