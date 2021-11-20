@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Usuarios</string>
+
+    <string name="menu_song">Ir a Cancion</string>
+    <string name="menu_user">Ir a Usuario</string>
+
+
+</resources>
