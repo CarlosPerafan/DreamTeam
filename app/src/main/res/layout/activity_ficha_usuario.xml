@@ -8,7 +8,7 @@
     tools:context=".FichaUsuarioActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tVuser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -186,11 +186,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/checkBox" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="right|center_vertical"
+        android:padding="15dp"
+        android:orientation="horizontal">
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabEditar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        android:layout_gravity="center"
+        android:layout_marginRight="15dp"
         android:clickable="true"
         android:src="@drawable/ic_edit" />
 
@@ -198,8 +206,10 @@
         android:id="@+id/fabEliminar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        android:layout_gravity="center"
+
         android:clickable="true"
         app:srcCompat="@drawable/ic_delete" />
+    </LinearLayout>
 
 </LinearLayout>

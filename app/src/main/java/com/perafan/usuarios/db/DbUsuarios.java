@@ -41,6 +41,18 @@ public class DbUsuarios extends DbHelper {
         return newRowId;
 
     }
+
+    public Cursor ValidarUsuario(String email){
+        Cursor micursor = null;
+        try {
+
+            micursor = this.getReadableDatabase().query(TABLE_USUARIOS, null,"Email like '" + email + "'"  , null, null, null, null);
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return micursor;
+
+    }
     //Validar si el usuario existe y es administrador
     public Cursor ConsultarAdmin(String user, String pass) throws SQLException
     {

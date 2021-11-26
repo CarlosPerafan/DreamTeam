@@ -6,13 +6,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="?attr/listPreferredItemHeightSmall"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="?attr/selectableItemBackground">
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="35dp"
-            android:layout_height="match_parent"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
             android:layout_weight=".1"
             android:src="@drawable/ic_account_user" />
 
@@ -60,13 +62,7 @@
                     android:layout_gravity="left"
                     android:text="TextView"
                     android:textSize="12sp" />
-                <TextView
-                    android:id="@+id/tVPassword"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:text="TextView"
-                    android:textSize="12sp" />
+
 
                 <TextView
                     android:id="@+id/tVTelefono"

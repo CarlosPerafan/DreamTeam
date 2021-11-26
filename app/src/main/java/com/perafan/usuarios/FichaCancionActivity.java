@@ -8,14 +8,19 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.perafan.usuarios.db.DbCanciones;
 import com.perafan.usuarios.entidades.Canciones;
 
 public class FichaCancionActivity extends AppCompatActivity {
+
 
     EditText eTTitulo,eTArtista,eTAlbum,eTGenero,eTPrecio;
     Button bGuardar;
@@ -28,6 +33,8 @@ public class FichaCancionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ficha_cancion);
+
+
 
         eTTitulo = findViewById(R.id.eTTitulo);
         eTArtista = findViewById(R.id.eTArtista);
@@ -52,6 +59,8 @@ public class FichaCancionActivity extends AppCompatActivity {
         DbCanciones dbcanciones = new DbCanciones(FichaCancionActivity.this);
         cancion = dbcanciones.Fichacancion(id);
         if (cancion != null) {
+
+
             eTTitulo.setText(cancion.getTitulo());
             eTArtista.setText(cancion.getArtista());
             eTAlbum.setText(cancion.getAlbum());
@@ -94,6 +103,49 @@ public class FichaCancionActivity extends AppCompatActivity {
                         }).show();
             }
         });
+    }
+
+
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_nivel_dos,menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.logout:
+                salir();
+                return true;
+
+            default: return super.onOptionsItemSelected(item);
+
+        }
+
+    }
+    // Revisar metodo no cierra del todo la app
+
+    public void salir()
+    {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setMessage("¿Desea salir de MusicApp ?")
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.show();
     }
 
     private void listar()

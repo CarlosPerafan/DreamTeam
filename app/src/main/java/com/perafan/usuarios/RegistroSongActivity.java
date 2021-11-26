@@ -1,5 +1,7 @@
 package com.perafan.usuarios;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -72,10 +74,11 @@ public class RegistroSongActivity extends AppCompatActivity {
         gen.setText("");
         prc.setText("");
     }
+
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_ppal,menu);
+        inflater.inflate(R.menu.menu_nivel_dos,menu);
         return true;
     }
 
@@ -83,17 +86,35 @@ public class RegistroSongActivity extends AppCompatActivity {
     {
         switch (item.getItemId())
         {
-            case R.id.menuCancion:
-                irlistaCancion();
-                return true;
-            case R.id.menUsuario:
-                irlistaUsuario();
+            case R.id.logout:
+                salir();
                 return true;
 
             default: return super.onOptionsItemSelected(item);
 
         }
 
+    }
+    // Revisar metodo no cierra del todo la app
+
+    public void salir()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("¿Desea salir de MusicApp ?")
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.show();
     }
 
     private void irlistaCancion()
@@ -112,6 +133,7 @@ public class RegistroSongActivity extends AppCompatActivity {
         Intent intent = new Intent(this,ListatiendaActivity.class); //ojo
         startActivity(intent);
     }
+
 
 
 }

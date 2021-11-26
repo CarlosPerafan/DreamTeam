@@ -22,7 +22,7 @@ public class DbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL("CREATE TABLE "+TABLE_USUARIOS+"(" +
+        db.execSQL("CREATE TABLE IF NOT EXISTS "+TABLE_USUARIOS+"(" +
                 " idU INTEGER PRIMARY KEY AUTOINCREMENT," +
                 " nombre TEXT," +
                 " apellidos TEXT," +
@@ -31,7 +31,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 " telefono INTEGER," +
                 " acepta INTEGER);");
 
-        db.execSQL("CREATE TABLE "+TABLE_LISTACANCIONES+"(" +
+        db.execSQL("CREATE TABLE IF NOT EXISTS "+TABLE_LISTACANCIONES+"(" +
                 " idLC INTEGER PRIMARY KEY AUTOINCREMENT," +
                 " titulo TEXT," +
                 " artista TEXT," +
@@ -39,7 +39,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 " genero TEXT," +
                 " precio DECIMAL(8,2));");
 
-        db.execSQL("CREATE TABLE "+TABLE_LISTAUSUARIO+ " (" +
+        db.execSQL("CREATE TABLE IF NOT EXISTS "+TABLE_LISTAUSUARIO+ " (" +
                 " id_U INTEGER," +
                 " id_LC INTEGER," +
                 " FOREIGN KEY (id_U) REFERENCES t_usuarios(idU)," +
@@ -49,9 +49,9 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE "+TABLE_USUARIOS);
-        db.execSQL("DROP TABLE "+TABLE_LISTACANCIONES);
-        db.execSQL("DROP TABLE "+TABLE_LISTAUSUARIO);
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE_USUARIOS);
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE_LISTACANCIONES);
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE_LISTAUSUARIO);
         onCreate(db);
     }
 }

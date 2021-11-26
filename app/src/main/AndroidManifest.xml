@@ -11,7 +11,7 @@
         android:theme="@style/Theme.Usuarios">
         <activity
             android:name=".ListaCompradorActivity"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".FichaUsuarioActivity"
             android:exported="false">
@@ -22,10 +22,13 @@
         <activity
             android:name=".ListaUsuarioActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity" />
+
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
         <activity
             android:name=".ListatiendaActivity"
             android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".RegistroSongActivity"
