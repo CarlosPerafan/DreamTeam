@@ -89,10 +89,10 @@ public class FichaCancionActivity extends AppCompatActivity {
                         .setPositiveButton("SI", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                 if (dbcanciones.eliminarCancion(id))
-                                 {
+                                if (dbcanciones.eliminarCancion(id))
+                                {
                                     listar();
-                                 }
+                                }
                             }
                         })
                         .setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -154,4 +154,4 @@ public class FichaCancionActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    }
+}

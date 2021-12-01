@@ -1,6 +1,8 @@
 package com.perafan.usuarios.entidades;
 
-public class Canciones
+import java.io.Serializable;
+
+public class Canciones implements Serializable
 {
     private int idLC;
     private String titulo;

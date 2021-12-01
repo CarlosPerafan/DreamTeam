@@ -173,22 +173,22 @@
         android:gravity="right|center_vertical"
         android:padding="15dp"
         android:orientation="horizontal">
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabEditar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginRight="15dp"
-        android:clickable="true"
-        android:src="@drawable/ic_edit" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabEditar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="15dp"
+            android:clickable="true"
+            android:src="@drawable/ic_edit" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabEliminar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:layout_gravity="center"
-        app:srcCompat="@drawable/ic_delete" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabEliminar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_delete" />
     </LinearLayout>
 
 </LinearLayout>

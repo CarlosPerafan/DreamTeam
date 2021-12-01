@@ -55,15 +55,15 @@ public class DbCanciones extends DbHelper  {
         if (cursorcanciones.moveToFirst())
         {
             do{
-                    cancion = new Canciones();
-                    cancion.setIdLC(cursorcanciones.getInt(0));
-                    cancion.setTitulo(cursorcanciones.getString(1));
-                    cancion.setArtista(cursorcanciones.getString(2));
-                    cancion.setAlbum(cursorcanciones.getString(3));
-                    cancion.setGenero(cursorcanciones.getString(4));
-                    cancion.setPrecio(cursorcanciones.getFloat(5));
+                cancion = new Canciones();
+                cancion.setIdLC(cursorcanciones.getInt(0));
+                cancion.setTitulo(cursorcanciones.getString(1));
+                cancion.setArtista(cursorcanciones.getString(2));
+                cancion.setAlbum(cursorcanciones.getString(3));
+                cancion.setGenero(cursorcanciones.getString(4));
+                cancion.setPrecio(cursorcanciones.getFloat(5));
 
-                    listacanciones.add(cancion);
+                listacanciones.add(cancion);
 
             } while(cursorcanciones.moveToNext());
         }
@@ -84,13 +84,13 @@ public class DbCanciones extends DbHelper  {
 
         if (cursorcanciones.moveToFirst())
         {
-                cancion = new Canciones();
-                cancion.setIdLC(cursorcanciones.getInt(0));
-                cancion.setTitulo(cursorcanciones.getString(1));
-                cancion.setArtista(cursorcanciones.getString(2));
-                cancion.setAlbum(cursorcanciones.getString(3));
-                cancion.setGenero(cursorcanciones.getString(4));
-                cancion.setPrecio(cursorcanciones.getFloat(5));
+            cancion = new Canciones();
+            cancion.setIdLC(cursorcanciones.getInt(0));
+            cancion.setTitulo(cursorcanciones.getString(1));
+            cancion.setArtista(cursorcanciones.getString(2));
+            cancion.setAlbum(cursorcanciones.getString(3));
+            cancion.setGenero(cursorcanciones.getString(4));
+            cancion.setPrecio(cursorcanciones.getFloat(5));
 
         }
         cursorcanciones.close();
@@ -140,3 +140,4 @@ public class DbCanciones extends DbHelper  {
 
 
 }
+

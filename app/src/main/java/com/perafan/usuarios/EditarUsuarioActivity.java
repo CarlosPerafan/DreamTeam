@@ -133,7 +133,7 @@ public class EditarUsuarioActivity  extends AppCompatActivity {
 
     }
 
-   private void presentaregistro()
+    private void presentaregistro()
     {
         Intent intent = new Intent(this,ListaUsuarioActivity.class);
         intent.putExtra("idU",id);

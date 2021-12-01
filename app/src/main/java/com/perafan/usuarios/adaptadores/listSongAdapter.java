@@ -27,7 +27,7 @@ public class listSongAdapter extends RecyclerView.Adapter<listSongAdapter.Contac
     @Override
     public ContactoViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.lista_item_song,null,false);  //Revisar que quite el parent.getContexto por viewGroup.getContext
-              return new ContactoViewHolder(view);
+        return new ContactoViewHolder(view);
     }
 
     @Override
@@ -70,3 +70,4 @@ public class listSongAdapter extends RecyclerView.Adapter<listSongAdapter.Contac
         }
     }
 }
+

@@ -4,6 +4,9 @@
     <string name="menu_user">Administrar Usuarios</string>
     <string name="menu_song">Administrar Canciones</string>
 
+    <string name="menu_shop">Comprar</string>
+    <string name="menu_list">Mi Lista</string>
+
     <string name="apertura">APERTURA</string>
     <string name="cierre">CIERRE</string>
 

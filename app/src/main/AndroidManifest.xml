@@ -10,8 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Usuarios">
         <activity
+            android:name=".CarroCompraActivity"
+            android:exported="false" />
+        <activity
             android:name=".ListaCompradorActivity"
-            android:exported="false"/>
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".FichaUsuarioActivity"
             android:exported="false">
@@ -22,14 +26,12 @@
         <activity
             android:name=".ListaUsuarioActivity"
             android:exported="false"
-
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ListatiendaActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".RegistroSongActivity"
             android:exported="false">
