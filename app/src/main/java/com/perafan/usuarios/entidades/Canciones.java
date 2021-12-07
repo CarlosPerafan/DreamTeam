@@ -1,6 +1,10 @@
 package com.perafan.usuarios.entidades;
 
-public class Canciones
+import android.net.Uri;
+
+import java.io.Serializable;
+
+public class Canciones implements Serializable
 {
     private int idLC;
     private String titulo;
@@ -8,6 +12,22 @@ public class Canciones
     private String album;
     private String genero;
     private float  precio;
+    private String img;
+
+    public Canciones() {
+    }
+
+
+    public Canciones(int idLC, String titulo, String artista, String album, String genero, float precio,String img) {
+        this.idLC = idLC;
+        this.titulo = titulo;
+        this.artista = artista;
+        this.album = album;
+        this.genero = genero;
+        this.precio = precio;
+        this.img = img;
+    }
+
 
     public int getIdLC() {
         return idLC;
@@ -56,4 +76,9 @@ public class Canciones
     public void setPrecio(float precio) {
         this.precio = precio;
     }
+
+    public String getImg() {   return img;     }
+
+    public void setImg(String img) {  this.img = img;     }
+
 }

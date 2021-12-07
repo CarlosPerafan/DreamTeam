@@ -2,10 +2,14 @@ package com.perafan.usuarios;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.renderscript.ScriptGroup;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
@@ -14,13 +18,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.perafan.usuarios.db.DbCanciones;
 import com.perafan.usuarios.entidades.Canciones;
+import com.perafan.usuarios.entidades.Usuarios;
+
+import java.util.List;
 
 public class FichaCancionActivity extends AppCompatActivity {
 
+    FirebaseFirestore firedb;
+    private static final String TAG = RegistroUsuarioActivity.class.getName();
 
     EditText eTTitulo,eTArtista,eTAlbum,eTGenero,eTPrecio;
     Button bGuardar;
@@ -33,8 +44,6 @@ public class FichaCancionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ficha_cancion);
-
-
 
         eTTitulo = findViewById(R.id.eTTitulo);
         eTArtista = findViewById(R.id.eTArtista);
@@ -57,52 +66,81 @@ public class FichaCancionActivity extends AppCompatActivity {
         }
 
         DbCanciones dbcanciones = new DbCanciones(FichaCancionActivity.this);
-        cancion = dbcanciones.Fichacancion(id);
-        if (cancion != null) {
+        //cancion = dbcanciones.Fichacancion(id);
 
+        firedb = FirebaseFirestore.getInstance();
 
-            eTTitulo.setText(cancion.getTitulo());
-            eTArtista.setText(cancion.getArtista());
-            eTAlbum.setText(cancion.getAlbum());
-            eTGenero.setText(cancion.getGenero());
-            eTPrecio.setText(String.valueOf(cancion.getPrecio()));
-            bGuardar.setVisibility(View.INVISIBLE);
-            eTTitulo.setInputType(InputType.TYPE_NULL);
-            eTArtista.setInputType(InputType.TYPE_NULL);
-            eTAlbum.setInputType(InputType.TYPE_NULL);
-            eTGenero.setInputType(InputType.TYPE_NULL);
-            eTPrecio.setInputType(InputType.TYPE_NULL);
-        }
-        fabEditar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(FichaCancionActivity.this, EditarCancionActivity.class);
-                intent.putExtra("idLC", id);  //Vlaidar el id
-                startActivity(intent);
-            }
-        });
-        fabEliminar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(FichaCancionActivity.this);
-                builder.setMessage("¿Desea eliminar esta cancion?")
-                        .setPositiveButton("SI", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                 if (dbcanciones.eliminarCancion(id))
-                                 {
-                                    listar();
-                                 }
+        firedb.collection("Canciones")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            List<Canciones> SongsList = task.getResult().toObjects(Canciones.class);
+                            Canciones cancion = new Canciones();
+                            for (Canciones song : SongsList) {
+                                if (song.getIdLC()== id){
+                                    cancion = song;
+                                }
                             }
-                        })
-                        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
 
+
+                            if (cancion != null) {
+
+
+                                eTTitulo.setText(cancion.getTitulo());
+                                eTArtista.setText(cancion.getArtista());
+                                eTAlbum.setText(cancion.getAlbum());
+                                eTGenero.setText(cancion.getGenero());
+                                eTPrecio.setText(String.valueOf(cancion.getPrecio()));
+                                bGuardar.setVisibility(View.INVISIBLE);
+                                eTTitulo.setInputType(InputType.TYPE_NULL);
+                                eTArtista.setInputType(InputType.TYPE_NULL);
+                                eTAlbum.setInputType(InputType.TYPE_NULL);
+                                eTGenero.setInputType(InputType.TYPE_NULL);
+                                eTPrecio.setInputType(InputType.TYPE_NULL);
                             }
-                        }).show();
-            }
-        });
+                            fabEditar.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(FichaCancionActivity.this, EditarCancionActivity.class);
+                                    intent.putExtra("idLC", id);  //Vlaidar el id
+                                    startActivity(intent);
+                                }
+                            });
+                            fabEliminar.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(FichaCancionActivity.this);
+                                    builder.setMessage("¿Desea eliminar esta cancion?")
+                                            .setPositiveButton("SI", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                    try{
+                                                        dbcanciones.eliminarfireCancion(id);
+                                                        listar();
+
+                                                    }catch(Exception e){
+                                                        e.toString();
+                                                    }
+                                                }
+                                            })
+                                            .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                }
+                                            }).show();
+                                }
+                            });
+
+                        } else {
+                            //Log.d(TAG, "Error getting documents: ", task.getException());
+                            Toast.makeText(FichaCancionActivity.this, "No hay domentos en la Collection !", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
 

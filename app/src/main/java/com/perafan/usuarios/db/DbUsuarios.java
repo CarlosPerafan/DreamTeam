@@ -98,7 +98,7 @@ public class DbUsuarios extends DbHelper {
                             }
                             int tam = userList.size();
                             tam = tam+1;
-                            Toast.makeText(context,"El tamano de la coleccion "+userList.size(),Toast.LENGTH_LONG).show();
+                            //Toast.makeText(context,"El tamano de la coleccion "+userList.size(),Toast.LENGTH_LONG).show();
 
                             Map<String, Object> user = new HashMap<>();
                             user.put ("idU", tam);
@@ -114,13 +114,13 @@ public class DbUsuarios extends DbHelper {
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            Toast.makeText(context,"Se INSERTO el registro ",Toast.LENGTH_LONG).show();
+                                            //Toast.makeText(context,"Se INSERTO el registro ",Toast.LENGTH_LONG).show();
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(context,"No INSERTO el registro",Toast.LENGTH_LONG).show();
+                                           // Toast.makeText(context,"No INSERTO el registro",Toast.LENGTH_LONG).show();
                                         }
                                     });
 

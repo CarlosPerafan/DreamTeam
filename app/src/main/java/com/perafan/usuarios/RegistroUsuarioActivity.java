@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,6 +34,7 @@ import com.perafan.usuarios.db.DbUsuarios;
 import com.perafan.usuarios.entidades.Usuarios;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class RegistroUsuarioActivity extends AppCompatActivity {
     FirebaseFirestore firedb;
@@ -43,6 +45,16 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
     CheckBox check;
     EditText nom,apell,corr,clave,tel;
     int acepta;
+
+    public static final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
+            "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+                    "\\@" +
+                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                    "(" +
+                    "\\." +
+                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                    ")+"
+    );
 
 
     @Override
@@ -59,6 +71,8 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
         check   = (CheckBox) findViewById(R.id.chk);
 
 
+
+
         guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +81,8 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
 
                 acepta = check.isChecked() ? 1 : 0;
                 boolean existe = false;
+
+                if( checkEmail(corr.getText().toString())){
 
                 firedb = FirebaseFirestore.getInstance();
                 firedb.collection("Usuarios")
@@ -92,9 +108,9 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
                                                     clave.getText().toString(),
                                                     Integer.parseInt(tel.getText().toString()),
                                                     acepta);  //Ojo resolver el problema
-
-                                            Toast.makeText(getApplicationContext(), "Usuario Almacenado Exitosamente " + acepta, Toast.LENGTH_LONG).show();
                                             irlistaUsuario();
+                                            Toast.makeText(getApplicationContext(), "Usuario Almacenado Exitosamente ", Toast.LENGTH_LONG).show();
+
                                         }catch(Exception ex) {
 
                                             Toast.makeText(getApplicationContext(), "Ocurrió un error. Usuario NO fue Almacenado " , Toast.LENGTH_LONG).show();
@@ -102,7 +118,7 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
 
                                         }
                                     }else{
-                                        Toast.makeText(getApplicationContext(), "El usuario ya existe en la BD.", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), "El usuario ya existe en la COLLECTION.", Toast.LENGTH_LONG).show();
                                         irmain();
 
                                     }
@@ -117,7 +133,9 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
                             }
                         });
 
-
+                }else{
+                    Toast.makeText(getApplicationContext(), "El E-mail no es valido!!",Toast.LENGTH_LONG).show();
+                }
 
 
 
@@ -166,8 +184,8 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
     }
     private void irlistaUsuario()
     {
-        Intent intent = new Intent(this,ListaUsuarioActivity.class);
-        startActivity(intent);
+        Intent intentUser = new Intent(this,ListaUsuarioActivity.class);
+        startActivity(intentUser);
     }
 
     private void irmain()
@@ -216,5 +234,16 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
                     }
                 });
         builder.show();
+    }
+
+    private boolean validarEmail(String email) {
+        Pattern pattern = Patterns.EMAIL_ADDRESS;
+        return pattern.matcher(email).matches();
+    }
+
+
+
+    private boolean checkEmail(String email) {
+        return EMAIL_ADDRESS_PATTERN.matcher(email).matches();
     }
 }

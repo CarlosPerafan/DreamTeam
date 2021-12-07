@@ -9,6 +9,7 @@ import android.database.SQLException;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import com.perafan.usuarios.db.DbUsuarios;
 import com.perafan.usuarios.entidades.Usuarios;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
                 int cont = 0;
                 EditText txtusu = (EditText) findViewById(R.id.eTName);
                 EditText txtpass = (EditText) findViewById(R.id.eTPass);
-                Toast.makeText(getApplicationContext(), "Usuario: " + txtusu.getText().toString(), Toast.LENGTH_LONG).show();
-                Toast.makeText(getApplicationContext(), "Clave: " + txtpass.getText().toString(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "Usuario: " + txtusu.getText().toString(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "Clave: " + txtpass.getText().toString(), Toast.LENGTH_LONG).show();
 
                 DbUsuarios dbusuario = new DbUsuarios(MainActivity.this);
 
@@ -73,28 +75,60 @@ public class MainActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 if (task.isSuccessful()) {
                                     List<Usuarios> UsuariosList = task.getResult().toObjects(Usuarios.class);
+                                    int Cliente = 0;
                                     int rol = 0;
-                                    String cad = txtusu.getText().toString();
+                                    boolean existe = false;
+                                    String login = txtusu.getText().toString();
+                                    String clave = txtpass.getText().toString();
                                     for (Usuarios user : UsuariosList) {
-                                        if ((user.getEmail().equalsIgnoreCase(cad)) && (cad.contains("@adm"))) {
-                                            Toast.makeText(getApplicationContext(), "Este es el email "+user.getEmail(), Toast.LENGTH_LONG).show();
-                                            rol = 1;
+                                        if ((user.getEmail().equalsIgnoreCase(login)) && (login.contains("@adm")) ) {
+                                             existe = true;
+                                             if (user.getClave().equals(clave)){
+                                                 rol = 10;
+                                             }else{
+                                                 rol = 1;
+                                             }
+
+                                            Cliente = user.getIdU();
+                                            //Toast.makeText(getApplicationContext(), "Este es el email "+user.getEmail(), Toast.LENGTH_LONG).show();
+
                                         } else if (user.getEmail().equalsIgnoreCase(txtusu.getText().toString())) {
-                                            rol = 2;
+
+                                                existe = true;
+                                                if (user.getClave().equals(clave)){
+                                                    rol = 20;
+                                                }else{
+                                                    rol = 1;
+                                                }
+
+                                            Cliente = user.getIdU();
                                         }
-                                        // Toast.makeText(getApplicationContext(), "Este es el email "+user.getEmail()+" --> "+corr.getText().toString(), Toast.LENGTH_LONG).show();
                                     }
 
                                     switch (rol) {
                                         case 0:
-                                            Toast.makeText(getApplicationContext(), "Usuario y/o Clave incorrectos", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getApplicationContext(), "Usuario no Existe!! Registrate !!", Toast.LENGTH_LONG).show();
+                                            txtusu.setText("");
+                                            txtpass.setText("");
+                                            txtusu.findFocus();
                                             break;
                                         case 1:
+                                            Toast.makeText(getApplicationContext(), "Clave ingresada no es correcta !!", Toast.LENGTH_LONG).show();
+
+                                            txtpass.setText("");
+                                            txtpass.findFocus();
+                                            break;
+                                        case 10:
                                             Intent regAdmon = new Intent(getApplicationContext(), ListaUsuarioActivity.class);
                                             startActivityForResult(regAdmon, 0);
                                             break;
-                                        case 2:
+
+                                        case 20:
                                             Intent regShopper = new Intent(getApplicationContext(), ListaCompradorActivity.class);
+
+                                            // Mandar el cliente
+                                            //regShopper.putExtra("idU",Cliente);
+
                                             startActivityForResult(regShopper, 0);
                                             break;
                                     }
@@ -104,9 +138,7 @@ public class MainActivity extends AppCompatActivity {
                                 }// Cierra el IF
 
 
-                                txtusu.setText("");
-                                txtpass.setText("");
-                                txtusu.findFocus();
+
 
                             }
                         });
@@ -181,4 +213,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onKeyDown(keyCode, event);
     }
+
+
+
 }
