@@ -1,17 +1,16 @@
 package com.perafan.usuarios;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.widget.TextView;
 
 import com.perafan.usuarios.adaptadores.shopCartAdapter;
 import com.perafan.usuarios.entidades.Canciones;
 
 import java.util.ArrayList;
-import java.io.Serializable;
 
 public class CarroCompraActivity extends AppCompatActivity {
 

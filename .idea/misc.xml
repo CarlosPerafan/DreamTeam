@@ -7,18 +7,18 @@
         <entry key="..\:/Grupo8/MusicApp/app/src/main/res/drawable/ic_baseline_shopping_bag_24.xml" value="0.2203125" />
         <entry key="..\:/Grupo8/MusicApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2203125" />
         <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/activity_carro_compra.xml" value="0.20416666666666666" />
-        <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/activity_ficha_cancion.xml" value="0.18" />
+        <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/activity_ficha_cancion.xml" value="0.1" />
         <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/activity_ficha_usuario.xml" value="0.20416666666666666" />
         <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/activity_lista_comprador.xml" value="0.1" />
         <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/activity_main.xml" value="0.1" />
-        <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/activity_registro_song.xml" value="0.2" />
+        <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/activity_registro_song.xml" value="0.1" />
         <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/activity_registrousuario.xml" value="0.1" />
         <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/app_bar.xml" value="0.20416666666666666" />
         <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/content_list_comprador.xml" value="0.20416666666666666" />
-        <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/content_list_tienda.xml" value="0.10507246376811594" />
+        <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/content_list_tienda.xml" value="0.1" />
         <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/content_list_usuario.xml" value="0.20416666666666666" />
         <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/lista_item_shopping.xml" value="0.20416666666666666" />
-        <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/lista_item_song.xml" value="0.10507246376811594" />
+        <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/lista_item_song.xml" value="0.1" />
         <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/lista_item_user.xml" value="0.20416666666666666" />
         <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/lista_items_shop_sel.xml" value="0.20416666666666666" />
         <entry key="..\:/Grupo8/MusicApp/app/src/main/res/layout/nav_header.xml" value="0.20416666666666666" />

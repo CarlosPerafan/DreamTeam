@@ -11,6 +11,20 @@ public class Canciones implements Serializable
     private String genero;
     private float  precio;
 
+    public Canciones() {
+    }
+
+
+    public Canciones(int idLC, String titulo, String artista, String album, String genero, float precio) {
+        this.idLC = idLC;
+        this.titulo = titulo;
+        this.artista = artista;
+        this.album = album;
+        this.genero = genero;
+        this.precio = precio;
+    }
+
+
     public int getIdLC() {
         return idLC;
     }

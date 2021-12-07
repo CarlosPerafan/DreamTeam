@@ -5,9 +5,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
-import android.text.InputType;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,10 +22,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.perafan.usuarios.db.DbCanciones;
 import com.perafan.usuarios.entidades.Canciones;
 
+import java.util.List;
+
 public class EditarCancionActivity extends AppCompatActivity {
+
+    FirebaseFirestore firedb;
+    private static final String TAG = RegistroUsuarioActivity.class.getName();
 
     TextView tVsong;
     EditText eTTitulo,eTArtista,eTAlbum,eTGenero,eTPrecio;
@@ -65,37 +77,63 @@ public class EditarCancionActivity extends AppCompatActivity {
         }
 
         DbCanciones dbcanciones = new DbCanciones(EditarCancionActivity.this);
-        cancion = dbcanciones.Fichacancion(id);
-        if (cancion != null)
-        {
-            tVsong.setText("Editar Cancion");
+        //cancion = dbcanciones.Fichacancion(id);
 
-            eTTitulo.setText(cancion.getTitulo());
-            eTArtista.setText(cancion.getArtista());
-            eTAlbum.setText(cancion.getAlbum());
-            eTGenero.setText(cancion.getGenero());
-            eTPrecio.setText(String.valueOf(cancion.getPrecio()));
-        }
-        bGuardar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!eTTitulo.getText().toString().equals("") && !eTArtista.getText().toString().equals("") && !eTAlbum.getText().toString().equals("") && !eTGenero.getText().toString().equals("") && Float.parseFloat(eTPrecio.getText().toString())!=0)
-                {
-                    correcto = dbcanciones.editarcancion(id,eTTitulo.getText().toString(),eTArtista.getText().toString(),eTAlbum.getText().toString(),eTGenero.getText().toString(),Float.parseFloat(eTPrecio.getText().toString()));
-                    if(correcto== true)
-                    {
-                        Toast.makeText(EditarCancionActivity.this,"REGISTRO ACTUALIZADO",Toast.LENGTH_LONG).show();
-                        presentaregistro();
-                    }else
-                    {
-                        Toast.makeText(EditarCancionActivity.this,"ERROR AL ACTUALIZAR REGISTRO",Toast.LENGTH_LONG).show();
+        firedb = FirebaseFirestore.getInstance();
+
+        firedb.collection("Canciones")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            List<Canciones> SongsList = task.getResult().toObjects(Canciones.class);
+                            Canciones cancion = new Canciones();
+                            for (Canciones song : SongsList) {
+                                if (song.getIdLC()== id){
+                                    cancion = song;
+                                }
+                            }
+
+                            if (cancion != null)
+                            {
+                                tVsong.setText("Editar Cancion");
+
+                                eTTitulo.setText(cancion.getTitulo());
+                                eTArtista.setText(cancion.getArtista());
+                                eTAlbum.setText(cancion.getAlbum());
+                                eTGenero.setText(cancion.getGenero());
+                                eTPrecio.setText(String.valueOf(cancion.getPrecio()));
+                            }
+                            bGuardar.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if(!eTTitulo.getText().toString().equals("") && !eTArtista.getText().toString().equals("") && !eTAlbum.getText().toString().equals("") && !eTGenero.getText().toString().equals("") && Float.parseFloat(eTPrecio.getText().toString())!=0)
+                                    {
+                                        try{
+                                            dbcanciones.editarfirecancion(id,eTTitulo.getText().toString(),eTArtista.getText().toString(),eTAlbum.getText().toString(),eTGenero.getText().toString(),Float.parseFloat(eTPrecio.getText().toString()));
+                                            Toast.makeText(EditarCancionActivity.this,"REGISTRO ACTUALIZADO",Toast.LENGTH_LONG).show();
+                                            presentaregistro();
+
+                                        }catch(Exception e){
+
+                                            Toast.makeText(EditarCancionActivity.this,"ERROR AL ACTUALIZAR REGISTRO",Toast.LENGTH_LONG).show();
+                                            e.toString();
+                                        }
+
+                                    }else
+                                    {
+                                        Toast.makeText(EditarCancionActivity.this,"DEBE INGRESAR LOS CAMPOS OBLIGATORIOS",Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+
+                        } else {
+                            //Log.d(TAG, "Error getting documents: ", task.getException());
+                            Toast.makeText(EditarCancionActivity.this, "No hay domentos en la Collection !", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }else
-                {
-                    Toast.makeText(EditarCancionActivity.this,"DEBE INGRESAR LOS CAMPOS OBLIGATORIOS",Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+                });
 
     }
 
@@ -148,3 +186,4 @@ public class EditarCancionActivity extends AppCompatActivity {
         startActivity(intent);
     }
 }
+

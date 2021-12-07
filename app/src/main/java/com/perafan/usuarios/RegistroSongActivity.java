@@ -3,22 +3,32 @@ package com.perafan.usuarios;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.perafan.usuarios.db.DbCanciones;
-import com.perafan.usuarios.db.DbHelper;
+import com.perafan.usuarios.entidades.Canciones;
+import com.perafan.usuarios.entidades.Usuarios;
+
+import java.util.List;
 
 public class RegistroSongActivity extends AppCompatActivity {
 
+    FirebaseFirestore firedb;
+    private static final String TAG = RegistroUsuarioActivity.class.getName();
     Button guardar;
     EditText tit,art,alb,gen,prc;
 
@@ -39,6 +49,59 @@ public class RegistroSongActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DbCanciones dbCanciones = new DbCanciones(RegistroSongActivity.this);
+                boolean existe = false;
+
+                firedb = FirebaseFirestore.getInstance();
+                firedb.collection("Canciones")
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    List<Canciones> SongsList = task.getResult().toObjects(Canciones.class);
+                                    boolean existe= false;
+                                    for (Canciones song: SongsList) {
+                                        if(song.getTitulo().equalsIgnoreCase(tit.getText().toString())&& (song.getArtista().equalsIgnoreCase(art.getText().toString())) &&(song.getGenero().equalsIgnoreCase(gen.getText().toString()))){
+                                            existe = true;
+                                        }
+                                        // Toast.makeText(getApplicationContext(), "Este es el email "+user.getEmail()+" --> "+corr.getText().toString(), Toast.LENGTH_LONG).show();
+                                    }
+
+                                    if(!existe) {
+
+                                        try {
+                                            dbCanciones.insertarsongfire(tit.getText().toString(),
+                                                    art.getText().toString(),
+                                                    alb.getText().toString(),
+                                                    gen.getText().toString(),
+                                                    Float.parseFloat(prc.getText().toString()));
+
+                                            Toast.makeText(getApplicationContext(), "Canción Almacenada Exitosamente ", Toast.LENGTH_LONG).show();
+                                            reset();
+                                            listar();
+
+                                        } catch (Exception ex) {
+                                            Toast.makeText(getApplicationContext(), "Canción NO fue Almacenada ", Toast.LENGTH_LONG).show();
+                                            ex.toString();
+                                        }
+                                    }else{
+                                        Toast.makeText(getApplicationContext(), "La Canción YA existe en la COLLECTION.", Toast.LENGTH_LONG).show();
+                                        reset();
+                                        listar();
+                                    }
+                                } else {
+                                    //Log.d(TAG, "Error getting documents: ", task.getException());
+                                    Toast.makeText(getApplicationContext(), "No existe la COLLECTION", Toast.LENGTH_LONG).show();
+                                    irmain();
+
+                                }
+                            }
+                        });
+
+
+
+
+                /* SQLite
                 long idrow;
                 try {
                     idrow = dbCanciones.insertarcancion(tit.getText().toString(),
@@ -61,11 +124,12 @@ public class RegistroSongActivity extends AppCompatActivity {
                 }catch(Exception ex)
                 {
                     ex.toString();
-                }
+                }*/
             }
         });
 
     }
+
     private void reset()
     {
         tit.setText("");
@@ -131,6 +195,12 @@ public class RegistroSongActivity extends AppCompatActivity {
     private void listar()
     {
         Intent intent = new Intent(this,ListatiendaActivity.class); //ojo
+        startActivity(intent);
+    }
+
+    private void irmain()
+    {
+        Intent intent = new Intent(this,MainActivity.class);
         startActivity(intent);
     }
 

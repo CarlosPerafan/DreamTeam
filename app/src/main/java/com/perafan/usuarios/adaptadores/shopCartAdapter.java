@@ -2,8 +2,8 @@ package com.perafan.usuarios.adaptadores;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.perafan.usuarios.R;
 import com.perafan.usuarios.entidades.Canciones;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class shopCartAdapter extends RecyclerView.Adapter<shopCartAdapter.ContactoViewHolder> {
@@ -92,4 +91,3 @@ public class shopCartAdapter extends RecyclerView.Adapter<shopCartAdapter.Contac
         }
     }
 }
-

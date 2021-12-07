@@ -3,28 +3,36 @@ package com.perafan.usuarios;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.perafan.usuarios.db.DbCanciones;
 import com.perafan.usuarios.entidades.Canciones;
 import com.perafan.usuarios.adaptadores.listSongAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListatiendaActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    FirebaseFirestore firedb;
 
     RecyclerView listacanciones;
     ArrayList<Canciones> listArraycanciones;
@@ -56,10 +64,34 @@ public class ListatiendaActivity extends AppCompatActivity implements Navigation
 
         DbCanciones dbcanciones = new DbCanciones(ListatiendaActivity.this);
         listArraycanciones = new ArrayList<>();
-        listSongAdapter adapter = new listSongAdapter(dbcanciones.listarcanciones());
-        listacanciones.setAdapter(adapter);
+        // Estas lineas deben habilitarse para que lea de la base de datos SQLite
+        //listSongAdapter adapter = new listSongAdapter(dbcanciones.listarcanciones());
+        /** Codigo para leer desde la Coleccion de Firestore */
+        firedb = FirebaseFirestore.getInstance();
+        ArrayList<Canciones> songList = new ArrayList<>();
+
+        firedb.collection("Canciones")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            List<Canciones> CancionesList = task.getResult().toObjects(Canciones.class);
+                            for (Canciones cancion : CancionesList) {
+                                songList.add(cancion);
+                            }
+                            listSongAdapter adapter = new listSongAdapter(songList);
+                            listacanciones.setAdapter(adapter);
+                            listacanciones.addItemDecoration(new DividerItemDecoration(ListatiendaActivity.this,DividerItemDecoration.VERTICAL));
+                        } else {
+                            //Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+        /** Fin del Codifo para Firestore **/
+        //listacanciones.setAdapter(adapter);  ---> Deshabilitar si se desea regresar a SQLite
         //Linea que coloca el separador entre registros
-        listacanciones.addItemDecoration(new DividerItemDecoration(ListatiendaActivity.this,DividerItemDecoration.VERTICAL));
+        //listacanciones.addItemDecoration(new DividerItemDecoration(ListatiendaActivity.this,DividerItemDecoration.VERTICAL));  ---> Deshabilitar si se desea regresar a SQLite
 
         fabAdicionar = findViewById(R.id.fabAdicionar);
 

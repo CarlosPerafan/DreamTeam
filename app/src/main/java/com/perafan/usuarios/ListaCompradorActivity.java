@@ -3,33 +3,37 @@ package com.perafan.usuarios;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
+import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+import android.view.MenuItem;
+import android.widget.TextView;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.perafan.usuarios.adaptadores.listShopAdapter;
 import com.perafan.usuarios.adaptadores.listSongAdapter;
 import com.perafan.usuarios.db.DbCanciones;
 import com.perafan.usuarios.entidades.Canciones;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListaCompradorActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-
+    FirebaseFirestore firedb;
 
     RecyclerView listacanciones;
     ArrayList<Canciones> listArraycanciones;
@@ -64,10 +68,34 @@ public class ListaCompradorActivity extends AppCompatActivity implements Navigat
         DbCanciones dbcanciones = new DbCanciones(ListaCompradorActivity.this);
         listArraycanciones = new ArrayList<>();
         carroCompras = new ArrayList<>();
-        listShopAdapter adapter = new listShopAdapter(ListaCompradorActivity.this,dbcanciones.listarcanciones(),eTCant,carroCompras,fabVerCart);
-        listacanciones.setAdapter(adapter);
+        firedb = FirebaseFirestore.getInstance();
+        ArrayList<Canciones> songList = new ArrayList<>();
+
+        firedb.collection("Canciones")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            List<Canciones> CancionesList = task.getResult().toObjects(Canciones.class);
+                            for (Canciones cancion : CancionesList) {
+                                songList.add(cancion);
+                            }
+
+                            listShopAdapter adapter = new listShopAdapter(ListaCompradorActivity.this,songList,eTCant,carroCompras,fabVerCart);
+                            listacanciones.setAdapter(adapter);
+                            listacanciones.addItemDecoration(new DividerItemDecoration(ListaCompradorActivity.this,DividerItemDecoration.VERTICAL));
+                        } else {
+                            //Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+
+        // listShopAdapter adapter = new listShopAdapter(ListaCompradorActivity.this,dbcanciones.listarcanciones(),eTCant,carroCompras,fabVerCart);
+        //listacanciones.setAdapter(adapter);
         //Linea que coloca el separador entre registros
-        listacanciones.addItemDecoration(new DividerItemDecoration(ListaCompradorActivity.this,DividerItemDecoration.VERTICAL));
+
 
 
 
