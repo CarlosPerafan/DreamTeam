@@ -5,8 +5,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -14,8 +15,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.perafan.usuarios.db.DbHelper;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.perafan.usuarios.db.DbUsuarios;
+import com.perafan.usuarios.entidades.Usuarios;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
     Button b_registrar;
     Button b_ingresar;
 
-
+    FirebaseFirestore firedb;
+    private static final String TAG = RegistroUsuarioActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,24 +44,75 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent reg = new Intent (getApplicationContext(),RegistroUsuarioActivity.class);
-                startActivityForResult(reg,0);
+                Intent reg = new Intent(getApplicationContext(), RegistroUsuarioActivity.class);
+                startActivityForResult(reg, 0);
 
             }
         });
+
         b_ingresar = (Button) findViewById(R.id.b_Log);
+
+
         b_ingresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int cont=0;
+                int cont = 0;
                 EditText txtusu = (EditText) findViewById(R.id.eTName);
                 EditText txtpass = (EditText) findViewById(R.id.eTPass);
-                Toast.makeText(getApplicationContext(),"Usuario: "+txtusu.getText().toString(),Toast.LENGTH_LONG).show();
-                Toast.makeText(getApplicationContext(),"Clave: "+txtpass.getText().toString(),Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Usuario: " + txtusu.getText().toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Clave: " + txtpass.getText().toString(), Toast.LENGTH_LONG).show();
 
                 DbUsuarios dbusuario = new DbUsuarios(MainActivity.this);
-                try {
-                    Cursor cursorvalidar = dbusuario.ValidarUsuario(txtusu.getText().toString());
+
+
+                firedb = FirebaseFirestore.getInstance();
+                firedb.collection("Usuarios")
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    List<Usuarios> UsuariosList = task.getResult().toObjects(Usuarios.class);
+                                    int rol = 0;
+                                    String cad = txtusu.getText().toString();
+                                    for (Usuarios user : UsuariosList) {
+                                        if ((user.getEmail().equalsIgnoreCase(cad)) && (cad.contains("@adm"))) {
+                                            Toast.makeText(getApplicationContext(), "Este es el email "+user.getEmail(), Toast.LENGTH_LONG).show();
+                                            rol = 1;
+                                        } else if (user.getEmail().equalsIgnoreCase(txtusu.getText().toString())) {
+                                            rol = 2;
+                                        }
+                                        // Toast.makeText(getApplicationContext(), "Este es el email "+user.getEmail()+" --> "+corr.getText().toString(), Toast.LENGTH_LONG).show();
+                                    }
+
+                                    switch (rol) {
+                                        case 0:
+                                            Toast.makeText(getApplicationContext(), "Usuario y/o Clave incorrectos", Toast.LENGTH_LONG).show();
+                                            break;
+                                        case 1:
+                                            Intent regAdmon = new Intent(getApplicationContext(), ListaUsuarioActivity.class);
+                                            startActivityForResult(regAdmon, 0);
+                                            break;
+                                        case 2:
+                                            Intent regShopper = new Intent(getApplicationContext(), ListaCompradorActivity.class);
+                                            startActivityForResult(regShopper, 0);
+                                            break;
+                                    }
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Usuario NO EXISTE, registrate!", Toast.LENGTH_LONG).show();
+
+                                }// Cierra el IF
+
+
+                                txtusu.setText("");
+                                txtpass.setText("");
+                                txtusu.findFocus();
+
+                            }
+                        });
+
+
+                    /*Cursor cursorvalidar = dbusuario.ValidarUsuario(txtusu.getText().toString());
                     if (cursorvalidar.getCount()>0) {
                         Cursor cursor = dbusuario.ConsultarAdmin(txtusu.getText().toString(), txtpass.getText().toString());
                         cont = cursor.getCount();
@@ -74,22 +133,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }else{
                         Toast.makeText(getApplicationContext(), "Usuario no EXISTE, registrate!" + cont, Toast.LENGTH_LONG).show();
-                    }
-                    txtusu.setText("");
-                    txtpass.setText("");
-                    txtusu.findFocus();
-
-                }catch(SQLException e){
-                    e.printStackTrace();
-                }
-            }
-        });
+                    }*/
 
 
-
-
-
-       //  Lineas que crean la Base de Datos por Primera vez
+                //  Lineas que crean la Base de Datos por Primera vez
 
         /*b_crear = (Button) findViewById(R.id.b_crear);
         b_crear.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +151,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });*/
+            }
+        });
     }
 
     //Metodo que controla el click en el boton atras del dispositivo

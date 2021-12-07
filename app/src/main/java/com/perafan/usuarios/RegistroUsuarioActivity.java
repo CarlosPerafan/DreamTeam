@@ -3,11 +3,12 @@ package com.perafan.usuarios;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.preference.PreferenceManager;
-import android.provider.Settings;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,9 +19,24 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.perafan.usuarios.adaptadores.listUserAdapter;
 import com.perafan.usuarios.db.DbUsuarios;
+import com.perafan.usuarios.entidades.Usuarios;
+
+import java.util.List;
 
 public class RegistroUsuarioActivity extends AppCompatActivity {
+    FirebaseFirestore firedb;
+    private static final String TAG = RegistroUsuarioActivity.class.getName();
 
 
     Button guardar;
@@ -48,11 +64,66 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
             public void onClick(View v) {
                 DbUsuarios dbUsuarios = new DbUsuarios(RegistroUsuarioActivity.this);
                 long idrow;
-                int cont=0;
+
                 acepta = check.isChecked() ? 1 : 0;
                 boolean existe = false;
 
-                Cursor cursor = dbUsuarios.ValidarUsuario(corr.getText().toString());
+                firedb = FirebaseFirestore.getInstance();
+                firedb.collection("Usuarios")
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    List<Usuarios> UsuariosList = task.getResult().toObjects(Usuarios.class);
+                                     boolean existe= false;
+                                    for (Usuarios user : UsuariosList) {
+                                        if(user.getEmail().equalsIgnoreCase(corr.getText().toString())){
+                                            existe = true;
+                                        }
+                                       // Toast.makeText(getApplicationContext(), "Este es el email "+user.getEmail()+" --> "+corr.getText().toString(), Toast.LENGTH_LONG).show();
+                                    }
+
+                                    if(!existe){
+                                        try {
+                                            dbUsuarios.insertaruserfire(nom.getText().toString(),
+                                                    apell.getText().toString(),
+                                                    corr.getText().toString(),
+                                                    clave.getText().toString(),
+                                                    Integer.parseInt(tel.getText().toString()),
+                                                    acepta);  //Ojo resolver el problema
+
+                                            Toast.makeText(getApplicationContext(), "Usuario Almacenado Exitosamente " + acepta, Toast.LENGTH_LONG).show();
+                                            irlistaUsuario();
+                                        }catch(Exception ex) {
+
+                                            Toast.makeText(getApplicationContext(), "Ocurrió un error. Usuario NO fue Almacenado " , Toast.LENGTH_LONG).show();
+                                            ex.toString();
+
+                                        }
+                                    }else{
+                                        Toast.makeText(getApplicationContext(), "El usuario ya existe en la BD.", Toast.LENGTH_LONG).show();
+                                        irmain();
+
+                                    }
+
+
+                                } else {
+                                    //Log.d(TAG, "Error getting documents: ", task.getException());
+                                    Toast.makeText(getApplicationContext(), "No existe la COLLECTION", Toast.LENGTH_LONG).show();
+                                    irmain();
+
+                                }
+                            }
+                        });
+
+
+
+
+
+
+                //Para SQLite
+           /*     Cursor cursor = dbUsuarios.ValidarUsuario(corr.getText().toString());
                 cont=cursor.getCount();
                 if (cursor.getCount()== 0) {
 
@@ -81,7 +152,7 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
 
                     Toast.makeText(getApplicationContext(), "El usuario ya existe en la BD.", Toast.LENGTH_LONG).show();
                     irmain();
-                }
+                }*/
             }
         });
     }

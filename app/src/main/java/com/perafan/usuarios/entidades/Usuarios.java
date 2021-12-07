@@ -1,5 +1,7 @@
 package com.perafan.usuarios.entidades;
 
+import java.util.HashMap;
+
 public class Usuarios {
 
     private int idU;
@@ -9,6 +11,22 @@ public class Usuarios {
     private String clave;
     private int telefono;
     private int acepta;
+    public HashMap<Integer,Integer> cart;
+
+
+    public Usuarios() {
+
+    }
+    public Usuarios(int idU, String nombre, String apellidos, String email, String clave, int telefono, int acepta) {
+        this.idU = idU;
+        this.nombre = nombre;
+        this.apellidos = apellidos;
+        this.email = email;
+        this.clave = clave;
+        this.telefono = telefono;
+        this.acepta = acepta;
+        this.cart = cart;
+    }
 
     public int getIdU() {
         return idU;

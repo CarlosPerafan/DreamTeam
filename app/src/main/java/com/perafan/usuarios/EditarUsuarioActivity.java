@@ -5,8 +5,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,10 +22,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.perafan.usuarios.db.DbUsuarios;
 import com.perafan.usuarios.entidades.Usuarios;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EditarUsuarioActivity  extends AppCompatActivity {
+
+    FirebaseFirestore firedb;
+    private static final String TAG = RegistroUsuarioActivity.class.getName();
 
     TextView tVuser;
     EditText eTNombre,eTApellido,eTEmail,eTPassword,eTPhone;
@@ -67,49 +80,74 @@ public class EditarUsuarioActivity  extends AppCompatActivity {
         }
 
         DbUsuarios dbusuarios = new DbUsuarios(EditarUsuarioActivity.this);
-        usuario = dbusuarios.FichaUsuario(id);
-        if (usuario != null) {
+        //usuario = dbusuarios.FichaUsuario(id);
 
-            tVuser.setText("Editar Usuario");
-            eTNombre.setText(usuario.getNombre());
-            eTApellido.setText(usuario.getApellidos());
-            eTEmail.setText(usuario.getEmail());
-            eTPassword.setText(usuario.getClave());
-            eTPhone.setText(String.valueOf(usuario.getTelefono()));
-            if (usuario.getAcepta() == 1) {
-                chk.setChecked(true);
-            } else {
-                chk.setChecked(false);
-            }
+        firedb = FirebaseFirestore.getInstance();
+        ArrayList<Usuarios> userList = new ArrayList<>();
+
+        firedb.collection("Usuarios")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            List<Usuarios> UsuariosList = task.getResult().toObjects(Usuarios.class);
+                            Usuarios usuario = new Usuarios();
+                                for (Usuarios user : UsuariosList) {
+                                    //userList.add(user);  --> Ojo la necesito?
+                                    if (user.getIdU()== id){
+                                        usuario = user;
+                                    }
+                                }
+
+                                if (usuario != null) {
+
+                                    tVuser.setText("Editar Usuario");
+                                    eTNombre.setText(usuario.getNombre());
+                                    eTApellido.setText(usuario.getApellidos());
+                                    eTEmail.setText(usuario.getEmail());
+                                    eTPassword.setText(usuario.getClave());
+                                    eTPhone.setText(String.valueOf(usuario.getTelefono()));
+                                    if (usuario.getAcepta() == 1) {
+                                        chk.setChecked(true);
+                                    } else {
+                                        chk.setChecked(false);
+                                    }
+                                }
+
+                                bGuardar.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        acepta = chk.isChecked() ? 1 : 0;
+                                        //acepta =1;
+
+                                        if(!eTNombre.getText().toString().equals("") && !eTApellido.getText().toString().equals("") && !eTEmail.getText().toString().equals("") && !eTPassword.getText().toString().equals("") && !eTPhone.getText().toString().equals(""))
+                                        {
+                                            try {
+                                                dbusuarios.editarfireusuario(id, eTNombre.getText().toString(), eTApellido.getText().toString(), eTEmail.getText().toString(), eTPassword.getText().toString(), Integer.parseInt(eTPhone.getText().toString()), acepta);
+                                                Toast.makeText(EditarUsuarioActivity.this, "REGISTRO ACTUALIZADO", Toast.LENGTH_LONG).show();
+                                                presentaregistro();
+                                            }catch(Exception e)
+                                            {
+                                                Toast.makeText(EditarUsuarioActivity.this,"ERROR AL ACTUALIZAR REGISTRO",Toast.LENGTH_LONG).show();
+                                                e.toString();
+                                            }
+
+                                        }else
+                                        {
+                                            Toast.makeText(EditarUsuarioActivity.this,"DEBE INGRESAR LOS CAMPOS OBLIGATORIOS",Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
 
 
-        }
-
-        bGuardar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                acepta = chk.isChecked() ? 1 : 0;
-                //acepta =1;
-
-                if(!eTNombre.getText().toString().equals("") && !eTApellido.getText().toString().equals("") && !eTEmail.getText().toString().equals("") && !eTPassword.getText().toString().equals("") && !eTPhone.getText().toString().equals(""))
-                {
-                    correcto = dbusuarios.editarusuario(id,eTNombre.getText().toString(),eTApellido.getText().toString(),eTEmail.getText().toString(),eTPassword.getText().toString(),Integer.parseInt(eTPhone.getText().toString()),acepta);
-                    if(correcto== true)
-                    {
-                        Toast.makeText(EditarUsuarioActivity.this,"REGISTRO ACTUALIZADO",Toast.LENGTH_LONG).show();
-                        presentaregistro();
-                    }else
-                    {
-                        Toast.makeText(EditarUsuarioActivity.this,"ERROR AL ACTUALIZAR REGISTRO",Toast.LENGTH_LONG).show();
+                        } else {
+                            //Log.d(TAG, "Error getting documents: ", task.getException());
+                            Toast.makeText(EditarUsuarioActivity.this, "No existe el documento en la Collection !", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }else
-                {
-                    Toast.makeText(EditarUsuarioActivity.this,"DEBE INGRESAR LOS CAMPOS OBLIGATORIOS",Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
+                });
     }
 
     public boolean onCreateOptionsMenu(Menu menu)

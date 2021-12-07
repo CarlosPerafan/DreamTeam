@@ -5,15 +5,36 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.Nullable;
+import android.util.Log;
+import android.widget.Toast;
 
-import com.perafan.usuarios.entidades.Canciones;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.perafan.usuarios.RegistroUsuarioActivity;
 import com.perafan.usuarios.entidades.Usuarios;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DbUsuarios extends DbHelper {
     Context context;
+
+    FirebaseFirestore firedb;
+    private static final String TAG = RegistroUsuarioActivity.class.getName();
+
+
     public DbUsuarios(@Nullable Context context) {
         super(context);
         this.context = context;
@@ -42,7 +63,79 @@ public class DbUsuarios extends DbHelper {
 
     }
 
+    public void insertaruserfire(String nombre, String apellidos,String email, String clave, Integer telefono,Integer acepta){
+/* Se conserva si por algo
+        Cursor id;
+        int sec =0;
+        id = this.getReadableDatabase().rawQuery("SELECT max(idU) FROM "+TABLE_USUARIOS,null);
+        id.moveToFirst();
+        sec = id.getInt(0);
+        sec= sec+1;
+
+        Map<String, Object> user = new HashMap<>();
+        user.put ("idU", sec);
+        user.put("nombre", nombre);
+        user.put("apellidos", apellidos);
+        user.put("email", email);
+        user.put("clave", clave);
+        user.put("telefono", telefono);
+        user.put("acepta", acepta);
+
+*/
+        firedb = FirebaseFirestore.getInstance();
+
+        ArrayList<Usuarios> userList = new ArrayList<>();
+
+        firedb.collection("Usuarios")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            List<Usuarios> UsuariosList = task.getResult().toObjects(Usuarios.class);
+                            for (Usuarios user : UsuariosList) {
+                                userList.add(user);
+                            }
+                            int tam = userList.size();
+                            tam = tam+1;
+                            Toast.makeText(context,"El tamano de la coleccion "+userList.size(),Toast.LENGTH_LONG).show();
+
+                            Map<String, Object> user = new HashMap<>();
+                            user.put ("idU", tam);
+                            user.put("nombre", nombre);
+                            user.put("apellidos", apellidos);
+                            user.put("email", email);
+                            user.put("clave", clave);
+                            user.put("telefono", telefono);
+                            user.put("acepta", acepta);
+
+                            firedb.collection("Usuarios").document(String.valueOf(tam))
+                                    .set(user)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Toast.makeText(context,"Se INSERTO el registro ",Toast.LENGTH_LONG).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(context,"No INSERTO el registro",Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+
+
+                        } else {
+                            //Log.d(TAG, "Error getting documents: ", task.getException());
+                            Toast.makeText(context,"La COLLECTION NO Existe !!",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+
     public Cursor ValidarUsuario(String email){
+
+        // Para SQLite
         Cursor micursor = null;
         try {
 
@@ -114,6 +207,7 @@ public class DbUsuarios extends DbHelper {
 
     public Usuarios  FichaUsuario(int id)
     {
+
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -160,6 +254,41 @@ public class DbUsuarios extends DbHelper {
         return correcto;
 
     }
+
+    public void editarfireusuario(int id,String nombre, String apellidos,String email,String clave, int telefono, int acepta)
+    {
+
+        firedb = FirebaseFirestore.getInstance();
+
+        Map<String, Object> user = new HashMap<>();
+        user.put ("idU", id);
+        user.put("nombre", nombre);
+        user.put("apellidos", apellidos);
+        user.put("email", email);
+        user.put("clave", clave);
+        user.put("telefono", telefono);
+        user.put("acepta", acepta);
+
+
+        firedb.collection("Usuarios").document(String.valueOf(id))
+                .update(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                        Toast.makeText(context,"Se ACTUALIZO correctamente ",Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                        Toast.makeText(context,"NO se ACTUALIZO",Toast.LENGTH_LONG).show();
+                    }
+                });
+
+    }
+
     public boolean eliminarUsuario(int id) {
 
         boolean correcto = false;
@@ -178,6 +307,26 @@ public class DbUsuarios extends DbHelper {
         }
 
         return correcto;
+    }
+
+    public void eliminarfireUsuario(int id) {
+
+        firedb = FirebaseFirestore.getInstance();
+
+        firedb.collection("Usuarios").document(String.valueOf(id))
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(context,"Registro se ELIMINO correctamente ",Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context,"Registro NO se ELIMINO ",Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
 

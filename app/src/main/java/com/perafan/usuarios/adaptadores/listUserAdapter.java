@@ -2,15 +2,15 @@ package com.perafan.usuarios.adaptadores;
 
 import android.content.Context;
 import android.content.Intent;
-import android.icu.lang.UCharacter;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.perafan.usuarios.FichaUsuarioActivity;
 import com.perafan.usuarios.R;
@@ -36,7 +36,7 @@ public class listUserAdapter extends RecyclerView.Adapter<listUserAdapter.Contac
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onBindViewHolder(@NonNull ContactoViewHolder contactoViewHolder, int i) {
-
+        //contactoViewHolder.tVid.setText(listausuarios.get(i).getIdU());
             contactoViewHolder.tVNombre.setText(listausuarios.get(i).getNombre());
             contactoViewHolder.tVApellidos.setText("  "+listausuarios.get(i).getApellidos());
             contactoViewHolder.tVEmail.setText(listausuarios.get(i).getEmail());
@@ -51,10 +51,10 @@ public class listUserAdapter extends RecyclerView.Adapter<listUserAdapter.Contac
 
     public class ContactoViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tVNombre,tVApellidos,tVEmail,tVPassword, tVTelefono;
+        TextView tVNombre,tVApellidos,tVEmail,tVPassword, tVTelefono, tVid;
         public ContactoViewHolder(@NonNull View itemView) {
             super(itemView);
-
+            //tVid = itemView.findViewById(R.id.tVid);
             tVNombre    = itemView.findViewById(R.id.tVNombre);
             tVApellidos = itemView.findViewById(R.id.tVApellidos);
             tVEmail     = itemView.findViewById(R.id.tVEmail);
@@ -67,6 +67,8 @@ public class listUserAdapter extends RecyclerView.Adapter<listUserAdapter.Contac
                 public void onClick(View v) {
                     Context context = itemView.getContext();
                     Intent intent = new Intent(context, FichaUsuarioActivity.class);
+
+                    //Toast.makeText(context,"Este es el IdU que selecciono "+listausuarios.get(getAdapterPosition()).getIdU(),Toast.LENGTH_LONG);
                     intent.putExtra("idU",listausuarios.get(getAdapterPosition()).getIdU());
                     context.startActivity(intent);
                 }

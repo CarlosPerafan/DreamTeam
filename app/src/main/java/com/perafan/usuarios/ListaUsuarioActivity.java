@@ -3,33 +3,44 @@ package com.perafan.usuarios;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.perafan.usuarios.adaptadores.listSongAdapter;
 import com.perafan.usuarios.adaptadores.listUserAdapter;
 import com.perafan.usuarios.db.DbUsuarios;
+import com.perafan.usuarios.entidades.Canciones;
 import com.perafan.usuarios.entidades.Usuarios;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListaUsuarioActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     RecyclerView listausuarios;
     ArrayList<Usuarios> listArrayusuarios;
     FloatingActionButton fabAdicionar;
+
+    FirebaseFirestore firedb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +67,37 @@ public class ListaUsuarioActivity extends AppCompatActivity implements Navigatio
 
         DbUsuarios dbusuarios = new DbUsuarios(ListaUsuarioActivity.this);
         listArrayusuarios = new ArrayList<>();
-        listUserAdapter adapter = new listUserAdapter(dbusuarios.listarusuarios());
-        listausuarios.setAdapter(adapter);
 
+        // Estas lineas deben habilitarse para que lea de la base de datos SQLite
+        // listUserAdapter adapter = new listUserAdapter(dbusuarios.listarusuarios());
+        /** Codigo para leer desde la Coleccion de Firestore */
+        firedb = FirebaseFirestore.getInstance();
+        ArrayList<Usuarios> userList = new ArrayList<>();
+
+        firedb.collection("Usuarios")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            List<Usuarios> UsuariosList = task.getResult().toObjects(Usuarios.class);
+                            for (Usuarios user : UsuariosList) {
+                                userList.add(user);
+                            }
+
+                            listUserAdapter adapter = new listUserAdapter(userList);
+                            listausuarios.setAdapter(adapter);
+                            listausuarios.addItemDecoration(new DividerItemDecoration(ListaUsuarioActivity.this,DividerItemDecoration.VERTICAL));
+                        } else {
+                            //Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+        /** Fin del Codigo para Firestore **/
+
+        //listausuarios.setAdapter(adapter);  ---> Deshabilitar si se desea regresar a SQLite
         //Linea que coloca el separador entre registros
-        listausuarios.addItemDecoration(new DividerItemDecoration(ListaUsuarioActivity.this,DividerItemDecoration.VERTICAL));
+        //listausuarios.addItemDecoration(new DividerItemDecoration(ListaUsuarioActivity.this,DividerItemDecoration.VERTICAL));  ---> Deshabilitar si se desea regresar a SQLite
 
 
         fabAdicionar = findViewById(R.id.fabAdicionar);

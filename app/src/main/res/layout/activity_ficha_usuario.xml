@@ -193,7 +193,7 @@
         android:padding="15dp"
         android:orientation="horizontal">
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabEditar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -202,7 +202,7 @@
         android:clickable="true"
         android:src="@drawable/ic_edit" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabEliminar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
