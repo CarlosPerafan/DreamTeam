@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1073680502111",
+    "project_id": "dreamteam-3cde5",
+    "storage_bucket": "dreamteam-3cde5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1073680502111:android:8f7219620fe0baaf907aea",
+        "android_client_info": {
+          "package_name": "com.perafan.usuarios"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1073680502111-ossjpknat3rpuv3i05f7926le1ec5crh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkv0p5qYy_IKg34j_ffnGan8hKzv3MXIg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1073680502111-ossjpknat3rpuv3i05f7926le1ec5crh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
